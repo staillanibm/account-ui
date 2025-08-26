@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+account-api:
+  base-url: ${ACCOUNT_API_BASE_URL:http://localhost:25555/rad/sttAccountAPI.api:AccountAPI}
+  username: ${ACCOUNT_API_USERNAME:Administrator}
+  password: ${ACCOUNT_API_PASSWORD:manage}
+
+spring:
+  thymeleaf:
+    cache: false
+    mode: HTML

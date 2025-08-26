@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  account-ui:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ACCOUNT_API_BASE_URL=${ACCOUNT_API_BASE_URL:-http://localhost:5555/rad/sttAccountAPI.api:AccountAPI}
+      - ACCOUNT_API_USERNAME=${ACCOUNT_API_USERNAME:-Administrator}
+      - ACCOUNT_API_PASSWORD=${ACCOUNT_API_PASSWORD:-manage}
+    restart: unless-stopped

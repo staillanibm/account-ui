@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Comptes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des Comptes - Liste</h1>
+        
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        
+        <div class="search-form">
+            <label for="searchInput">Recherche par nom:</label>
+            <input type="text" id="searchInput" placeholder="Tapez le nom du compte...">
+            <button type="button" class="btn" onclick="filterAccounts()">Rechercher</button>
+            <button type="button" class="btn btn-secondary" onclick="clearSearch()">Effacer</button>
+        </div>
+        
+        <div th:if="${accounts != null and !accounts.empty}">
+            <table id="accountsTable">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Ville (Expédition)</th>
+                        <th>Pays (Expédition)</th>
+                        <th>Date de Création</th>
+                        <th>Dernière Mise à Jour</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="account : ${accounts}" class="account-row">
+                        <td>
+                            <a th:href="@{/accounts/{id}(id=${account.id})}" 
+                               class="account-link" 
+                               th:text="${account.name}">Nom du compte</a>
+                        </td>
+                        <td th:text="${account.type ?: 'N/A'}">Type</td>
+                        <td th:text="${account.shippingAddress?.city ?: 'N/A'}">Ville</td>
+                        <td th:text="${account.shippingAddress?.country ?: 'N/A'}">Pays</td>
+                        <td th:text="${#temporals.format(account.creationDateTime, 'dd/MM/yyyy HH:mm')}">Date création</td>
+                        <td th:text="${#temporals.format(account.lastUpdateDateTime, 'dd/MM/yyyy HH:mm')}">Date MAJ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div th:if="${accounts == null or accounts.empty}">
+            <p>Aucun compte trouvé.</p>
+        </div>
+    </div>
+    
+    <script>
+        let originalRows = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.querySelector('#accountsTable tbody');
+            if (tableBody) {
+                originalRows = Array.from(tableBody.querySelectorAll('.account-row'));
+            }
+        });
+        
+        function filterAccounts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const tableBody = document.querySelector('#accountsTable tbody');
+            
+            if (!tableBody || !searchTerm) {
+                showAllRows();
+                return;
+            }
+            
+            originalRows.forEach(row => {
+                const accountName = row.querySelector('.account-link').textContent.toLowerCase();
+                const isMatch = fuzzyMatch(accountName, searchTerm);
+                
+                if (isMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function fuzzyMatch(text, search) {
+            if (!search) return true;
+            
+            // Recherche exacte d'abord
+            if (text.includes(search)) return true;
+            
+            // Recherche fuzzy simple - vérifie si tous les caractères de la recherche
+            // apparaissent dans l'ordre dans le texte
+            let searchIndex = 0;
+            for (let i = 0; i < text.length && searchIndex < search.length; i++) {
+                if (text[i] === search[searchIndex]) {
+                    searchIndex++;
+                }
+            }
+            return searchIndex === search.length;
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            showAllRows();
+        }
+        
+        function showAllRows() {
+            originalRows.forEach(row => {
+                row.style.display = '';
+            });
+        }
+        
+        // Recherche en temps réel
+        document.getElementById('searchInput').addEventListener('input', function() {
+            if (this.value.length === 0) {
+                showAllRows();
+            } else {
+                filterAccounts();
+            }
+        });
+    </script>
+</body>
+</html>

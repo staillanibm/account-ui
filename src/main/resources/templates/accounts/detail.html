@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail du Compte</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <h1>Détail du Compte</h1>
+        
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+        
+        <div th:if="${account}" class="section">
+            <h2>Informations Générales</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>ID:</th>
+                    <td th:text="${account.id}">ID du compte</td>
+                </tr>
+                <tr>
+                    <th>Nom:</th>
+                    <td th:text="${account.name}">Nom du compte</td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td th:text="${account.type ?: 'N/A'}">Type du compte</td>
+                </tr>
+                <tr>
+                    <th>Description:</th>
+                    <td th:text="${account.description ?: 'N/A'}">Description</td>
+                </tr>
+                <tr>
+                    <th>Date de Création:</th>
+                    <td th:text="${#temporals.format(account.creationDateTime, 'dd/MM/yyyy HH:mm:ss')}">Date création</td>
+                </tr>
+                <tr>
+                    <th>Dernière Mise à Jour:</th>
+                    <td th:text="${#temporals.format(account.lastUpdateDateTime, 'dd/MM/yyyy HH:mm:ss')}">Date MAJ</td>
+                </tr>
+                <tr>
+                    <th>Supprimé:</th>
+                    <td th:text="${account.deleted ? 'Oui' : 'Non'}">Statut</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div th:if="${account?.billingAddress}" class="section">
+            <h2>Adresse de Facturation</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>Rue:</th>
+                    <td th:text="${account.billingAddress.street ?: 'N/A'}">Rue</td>
+                </tr>
+                <tr>
+                    <th>Ville:</th>
+                    <td th:text="${account.billingAddress.city ?: 'N/A'}">Ville</td>
+                </tr>
+                <tr>
+                    <th>État/Province:</th>
+                    <td th:text="${account.billingAddress.state ?: 'N/A'}">État</td>
+                </tr>
+                <tr>
+                    <th>Code Postal:</th>
+                    <td th:text="${account.billingAddress.postalCode ?: 'N/A'}">Code postal</td>
+                </tr>
+                <tr>
+                    <th>Pays:</th>
+                    <td th:text="${account.billingAddress.country ?: 'N/A'}">Pays</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div th:if="${account?.shippingAddress}" class="section">
+            <h2>Adresse d'Expédition</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>Rue:</th>
+                    <td th:text="${account.shippingAddress.street ?: 'N/A'}">Rue</td>
+                </tr>
+                <tr>
+                    <th>Ville:</th>
+                    <td th:text="${account.shippingAddress.city ?: 'N/A'}">Ville</td>
+                </tr>
+                <tr>
+                    <th>État/Province:</th>
+                    <td th:text="${account.shippingAddress.state ?: 'N/A'}">État</td>
+                </tr>
+                <tr>
+                    <th>Code Postal:</th>
+                    <td th:text="${account.shippingAddress.postalCode ?: 'N/A'}">Code postal</td>
+                </tr>
+                <tr>
+                    <th>Pays:</th>
+                    <td th:text="${account.shippingAddress.country ?: 'N/A'}">Pays</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div th:if="${account?.contactInfo}" class="section">
+            <h2>Informations de Contact</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>Téléphone:</th>
+                    <td th:text="${account.contactInfo.phone ?: 'N/A'}">Téléphone</td>
+                </tr>
+                <tr>
+                    <th>Site Web:</th>
+                    <td>
+                        <span th:if="${account.contactInfo.website}">
+                            <a th:href="${account.contactInfo.website}" 
+                               th:text="${account.contactInfo.website}"
+                               target="_blank"
+                               class="account-link">Site web</a>
+                        </span>
+                        <span th:unless="${account.contactInfo.website}">N/A</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <a th:href="@{/accounts}" class="back-link">← Retour à la liste des comptes</a>
+    </div>
+</body>
+</html>

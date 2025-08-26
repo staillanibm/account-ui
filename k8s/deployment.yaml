@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-ui-deployment
+  namespace: account-ui
+  labels:
+    app: account-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: account-ui
+  template:
+    metadata:
+      labels:
+        app: account-ui
+    spec:
+      imagePullSecrets:
+        - name: gh-regcred
+      containers:
+      - name: account-ui
+        image: ghcr.io/staillanibm/account-ui:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ACCOUNT_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: account-ui-config
+              key: ACCOUNT_API_BASE_URL
+        - name: ACCOUNT_API_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: account-ui-config
+              key: ACCOUNT_API_USERNAME
+        - name: ACCOUNT_API_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: account-ui-secret
+              key: ACCOUNT_API_PASSWORD
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /accounts
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /accounts
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+      restartPolicy: Always
