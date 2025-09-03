@@ -2,6 +2,7 @@ package com.example.accountui.controller;
 
 import com.example.accountui.model.Account;
 import com.example.accountui.service.AccountService;
+import com.example.accountui.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ public class AccountController {
         try {
             List<Account> accounts = accountService.getAllAccounts();
             model.addAttribute("accounts", accounts);
+            model.addAttribute("dateUtils", new DateUtils());
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la récupération des comptes: " + e.getMessage());
             model.addAttribute("accounts", List.of());
@@ -36,6 +38,7 @@ public class AccountController {
             Account account = accountService.getAccountById(id);
             if (account != null) {
                 model.addAttribute("account", account);
+                model.addAttribute("dateUtils", new DateUtils());
                 return "accounts/detail";
             } else {
                 model.addAttribute("error", "Compte non trouvé");

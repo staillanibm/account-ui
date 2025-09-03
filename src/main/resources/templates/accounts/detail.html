@@ -33,11 +33,11 @@
                 </tr>
                 <tr>
                     <th>Date de Création:</th>
-                    <td th:text="${#temporals.format(account.creationDateTime, 'dd/MM/yyyy HH:mm:ss')}">Date création</td>
+                    <td th:text="${dateUtils.formatToCET(account.creationDateTime)}">Date création</td>
                 </tr>
                 <tr>
                     <th>Dernière Mise à Jour:</th>
-                    <td th:text="${#temporals.format(account.lastUpdateDateTime, 'dd/MM/yyyy HH:mm:ss')}">Date MAJ</td>
+                    <td th:text="${dateUtils.formatToCET(account.lastUpdateDateTime)}">Date MAJ</td>
                 </tr>
                 <tr>
                     <th>Supprimé:</th>

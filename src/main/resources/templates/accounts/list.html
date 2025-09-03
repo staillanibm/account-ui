@@ -41,8 +41,8 @@
                         <td th:text="${account.type ?: 'N/A'}">Type</td>
                         <td th:text="${account.shippingAddress?.city ?: 'N/A'}">Ville</td>
                         <td th:text="${account.shippingAddress?.country ?: 'N/A'}">Pays</td>
-                        <td th:text="${#temporals.format(account.creationDateTime, 'dd/MM/yyyy HH:mm')}">Date création</td>
-                        <td th:text="${#temporals.format(account.lastUpdateDateTime, 'dd/MM/yyyy HH:mm')}">Date MAJ</td>
+                        <td th:text="${dateUtils.formatToCET(account.creationDateTime)}">Date création</td>
+                        <td th:text="${dateUtils.formatToCET(account.lastUpdateDateTime)}">Date MAJ</td>
                     </tr>
                 </tbody>
             </table>
